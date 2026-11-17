@@ -1,4 +1,4 @@
-import { normalizeLineEndings } from "./common.js";
+import { normalizeLineEndings } from "../core/common.js"
 
 export interface SanitizeSystemPromptResult {
   prompt: string;

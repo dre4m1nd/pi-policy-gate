@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { PermissionManager } from "../src/permission-manager.js";
+import { PermissionManager } from "../src/core/permission-manager.js"
 import { runTest } from "./test-harness.js";
 
 runTest("EDGE-RED: PermissionManager rejects path-traversal agent names when loading frontmatter overrides", () => {

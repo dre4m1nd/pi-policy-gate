@@ -2,10 +2,10 @@ import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, renameSyn
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { toRecord } from "./common.js";
-import { formatJsoncConfigLoadWarning, isNodeErrorWithCode, parseJsoncConfig } from "./jsonc-config.js";
+import { toRecord } from "../core/common.js"
+import { formatJsoncConfigLoadWarning, isNodeErrorWithCode, parseJsoncConfig } from "../core/jsonc-config.js"
 
-export const EXTENSION_ID = "pi-permission-system";
+export const EXTENSION_ID = "pi-policy-gate";
 
 export interface PermissionSystemExtensionConfig {
   /** Master switch. When false, the extension skips all registrations and startup work. */

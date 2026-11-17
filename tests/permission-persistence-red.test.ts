@@ -8,8 +8,8 @@ import {
   DEFAULT_EXTENSION_CONFIG,
   LOGS_DIR_ENV_KEY,
   type PermissionSystemExtensionConfig,
-} from "../src/extension-config.js";
-import piPermissionSystemExtension from "../src/index.js";
+} from "../src/extension/extension-config.js"
+import piPermissionSystemExtension from "../src/extension/index.js"
 import {
   PERMISSION_FORWARDING_AGENT_DIR_ENV_KEY,
   PI_AGENT_ROUTER_SHARED_AGENT_DIR_ENV_KEY,
@@ -17,8 +17,8 @@ import {
   PI_PERMISSION_SYSTEM_POLICY_AGENT_DIR_ENV_KEY,
   SUBAGENT_ENV_HINT_KEYS,
   SUBAGENT_PARENT_SESSION_ENV_KEY,
-} from "../src/permission-forwarding.js";
-import type { GlobalPermissionConfig, PermissionDefaultPolicy } from "../src/types.js";
+} from "../src/extension/permission-forwarding.js"
+import type { GlobalPermissionConfig, PermissionDefaultPolicy } from "../src/core/types.js"
 import { createMockContext } from "./test-harness.js";
 
 type ExpectedKind = "red" | "regression";
@@ -92,7 +92,7 @@ function createRuntimeHarness(
   const handlers: Record<string, MockHandler> = {};
   const extensionConfigPath = join(baseDir, "extension-config.json");
   const logsDir = join(baseDir, "logs");
-  const debugPath = join(logsDir, "pi-permission-system-debug.jsonl");
+  const debugPath = join(logsDir, "pi-policy-gate-debug.jsonl");
   const originalAgentDir = process.env.PI_CODING_AGENT_DIR;
   const originalConfigPath = process.env[CONFIG_PATH_ENV_KEY];
   const originalLogsDir = process.env[LOGS_DIR_ENV_KEY];

@@ -1,4 +1,4 @@
-import { normalizeAgentName, normalizeLineEndings } from "./common.js";
+import { normalizeAgentName, normalizeLineEndings } from "../core/common.js"
 
 export interface BeforeAgentStartPromptStateInput {
   agentName: string | null;

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-import type { GlobalPermissionConfig, PermissionState } from "./types.js";
+import type { GlobalPermissionConfig, PermissionState } from "../core/types.js"
 
 /**
  * A canonical, order-independent representation of an effective permission policy.

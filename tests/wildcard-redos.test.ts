@@ -2,9 +2,9 @@
 // Run with: bun ./tests/wildcard-redos.test.ts
 import assert from "node:assert/strict";
 import { runTest } from "./test-harness.js";
-import { compileWildcardPattern, findCompiledWildcardMatch } from "../src/wildcard-matcher.js";
-import type { WildcardPatternMatch } from "../src/wildcard-matcher.js";
-import type { PermissionState } from "../src/types.js";
+import { compileWildcardPattern, findCompiledWildcardMatch } from "../src/core/wildcard-matcher.js"
+import type { WildcardPatternMatch } from "../src/core/wildcard-matcher.js"
+import type { PermissionState } from "../src/core/types.js"
 
 // Normal behavior must still work after hardening.
 runTest("REDOS-NR: compileWildcardPattern matches normal wildcard patterns", () => {

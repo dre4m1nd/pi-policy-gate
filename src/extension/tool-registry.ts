@@ -1,4 +1,4 @@
-import { getNonEmptyString, toRecord } from "./common.js";
+import { getNonEmptyString, toRecord } from "../core/common.js"
 
 export type ToolRegistrationCheckResult =
   | {

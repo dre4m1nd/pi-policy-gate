@@ -21,7 +21,6 @@
 //   to:
 //     regex: new RegExp(`^${escaped}$`, 's')
 //
-// Issue: https://github.com/MasuRii/pi-permission-system/issues/24
 // ---------------------------------------------------------------------------
 
 import assert from "node:assert/strict";
@@ -30,10 +29,10 @@ import {
   compileWildcardPattern,
   compileWildcardPatterns,
   findCompiledWildcardMatch,
-} from "../src/wildcard-matcher.js";
-import { BashFilter } from "../src/bash-filter.js";
+} from "../src/core/wildcard-matcher.js"
+import { BashFilter } from "../src/core/bash-filter.js"
 import { runTest, runAsyncTest } from "./test-harness.js";
-import type { PermissionState } from "../src/types.js";
+import type { PermissionState } from "../src/core/types.js"
 
 // ===========================================================================
 // Section 1: compileWildcardPattern — unit tests on regex behavior

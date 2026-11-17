@@ -3,22 +3,22 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { parseSimpleYamlMap } from "../src/common.js";
-import { DEFAULT_EXTENSION_CONFIG, LOGS_DIR_ENV_KEY, CONFIG_PATH_ENV_KEY } from "../src/extension-config.js";
-import piPermissionSystemExtension, { processForwardedPermissionRequests, setExtensionConfig } from "../src/index.js";
-import { createPermissionSystemLogger } from "../src/logging.js";
+import { parseSimpleYamlMap } from "../src/core/common.js"
+import { DEFAULT_EXTENSION_CONFIG, LOGS_DIR_ENV_KEY, CONFIG_PATH_ENV_KEY } from "../src/extension/extension-config.js"
+import piPermissionSystemExtension, { processForwardedPermissionRequests, setExtensionConfig } from "../src/extension/index.js"
+import { createPermissionSystemLogger } from "../src/extension/logging.js"
 import {
   createPermissionForwardingLocation,
   PERMISSION_FORWARDING_AGENT_DIR_ENV_KEY,
   PI_PERMISSION_SYSTEM_POLICY_AGENT_DIR_ENV_KEY,
-} from "../src/permission-forwarding.js";
-import { compileWildcardPattern } from "../src/wildcard-matcher.js";
+} from "../src/extension/permission-forwarding.js"
+import { compileWildcardPattern } from "../src/core/wildcard-matcher.js"
 import {
   getPiPermissionSystemRuntimeApi,
   registerPiPermissionSystemRuntimeApi,
   unregisterPiPermissionSystemRuntimeApi,
   type PiPermissionSystemRuntimeApi,
-} from "../src/yolo-mode-api.js";
+} from "../src/extension/yolo-mode-api.js"
 import { createMockContext, runAsyncTest, runTest } from "./test-harness.js";
 
 const ASK_BASH_POLICY = {

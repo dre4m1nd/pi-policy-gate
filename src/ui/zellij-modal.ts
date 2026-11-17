@@ -1,5 +1,5 @@
-// Vendored from ../zellij-modal/index.ts to keep pi-permission-system standalone.
-// Keep this module in sync when upstream zellij-modal primitives change.
+// Self-contained TUI modal primitives for the settings dialog, rendered on top
+// of the pi-tui Box/Container/Text building blocks.
 import { type ExtensionAPI, type Theme } from "@earendil-works/pi-coding-agent";
 import {
 	Box,

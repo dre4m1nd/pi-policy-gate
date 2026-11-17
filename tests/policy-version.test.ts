@@ -4,8 +4,8 @@ import {
   computePolicyVersion,
   diffPolicies,
   toCanonicalPolicy,
-} from "../src/policy-version.js";
-import type { GlobalPermissionConfig } from "../src/types.js";
+} from "../src/governance/policy-version.js"
+import type { GlobalPermissionConfig } from "../src/core/types.js"
 
 const basePolicy: GlobalPermissionConfig = {
   defaultPolicy: { tools: "ask", bash: "ask", mcp: "ask", skills: "ask", special: "ask" },

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 
-import { BashFilter } from "../src/bash-filter.js";
-import { compileCommandPattern, isCommandRule } from "../src/bash-command.js";
+import { BashFilter } from "../src/core/bash-filter.js"
+import { compileCommandPattern, isCommandRule } from "../src/core/bash-command.js"
 
 type Case = { name: string; run: () => void };
 

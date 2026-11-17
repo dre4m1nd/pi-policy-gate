@@ -1,6 +1,6 @@
 import { computePolicyVersion } from "./policy-version.js";
-import type { PermissionCheckResult, PermissionState } from "./types.js";
-import type { PermissionManager } from "./permission-manager.js";
+import type { PermissionCheckResult, PermissionState } from "../core/types.js"
+import type { PermissionManager } from "../core/permission-manager.js"
 import type { AuditDecision } from "./audit-ledger.js";
 
 /**

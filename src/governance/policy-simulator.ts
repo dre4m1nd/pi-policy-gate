@@ -1,7 +1,7 @@
 import { computePolicyVersion, toCanonicalPolicy } from "./policy-version.js";
 import { evaluateToolCall, type PipelineDecision } from "./policy-pipeline.js";
-import type { PermissionManager } from "./permission-manager.js";
-import type { PermissionState } from "./types.js";
+import type { PermissionManager } from "../core/permission-manager.js"
+import type { PermissionState } from "../core/types.js"
 
 /**
  * Policy simulator and regression harness.

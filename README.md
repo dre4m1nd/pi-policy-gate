@@ -23,11 +23,8 @@
 - **仿真** —— 用一份固定的工具调用语料对策略求值，产出决策矩阵、规则覆盖率、死规则检测，
   以及两个策略版本之间的决策差异。
 
-pi-policy-gate 是
-[pi-permission-system](https://github.com/MasuRii/pi-permission-system)（MasuRii，MIT）的 fork。
-它原样保留确定性求值内核（通配匹配、last-match-wins、分层配置），并在其上构建治理层：
-策略版本化、审计账本与离线仿真器。扩展 id、调试日志名与权限请求事件通道继续沿用
-`pi-permission-system` 的标识符，因此已有安装可以原地升级，而不会破坏已配置的消费方。
+pi-policy-gate 在确定性权限求值内核（通配匹配、last-match-wins、分层配置）之上构建了可治理的
+策略层：策略版本化、审计账本与离线仿真器，让权限策略可被验证、回归与审计。
 
 ## 工作原理
 
@@ -52,15 +49,13 @@ tool call (tool, command/args)
    审计账本（只追加 JSONL，已脱敏，带 policyVersion 标记）
 ```
 
-## 相对基础版的新增
+## 治理层能力
 
-| 领域 | 基础版（pi-permission-system） | pi-policy-gate |
-| --- | --- | --- |
-| 求值内核 | 通配匹配、分层配置、fail-closed 兜底 | 不变 |
-| 策略版本化 | 无 | 有效策略的内容哈希，附加在每个决策上 |
-| 审计 | 会话历史中的 review 条目 | 只追加的决策账本，带密钥脱敏 |
-| `/audit` | 无 | 查看最近决策或导出为文件 |
-| 离线验证 | 无 | 策略仿真器：决策矩阵、覆盖率、死规则、差异 |
+| 能力 | 说明 |
+| --- | --- |
+| 策略版本化 | 有效策略的内容哈希，附加在每个决策上，可追溯、可对比 |
+| 审计 | 只追加的决策账本，带密钥脱敏；`/audit` 可查看最近决策或导出为文件 |
+| 离线仿真 | 决策矩阵、规则覆盖率、死规则检测、两个策略版本之间的决策 diff |
 
 ## Bash 子命令规则
 
@@ -191,4 +186,4 @@ bun run simulate    # 离线策略回归
 
 ## 许可
 
-MIT。派生自 [pi-permission-system](https://github.com/MasuRii/pi-permission-system)（MIT）。
+MIT。部分求值内核派生自 [pi-permission-system](https://github.com/MasuRii/pi-permission-system)（© MasuRii，MIT），已保留其版权与许可声明。

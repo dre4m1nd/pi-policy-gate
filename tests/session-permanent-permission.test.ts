@@ -3,7 +3,6 @@
 //
 // BACKGROUND (Issue #23):
 //   Request: "allow for session or permanent and pattern match"
-//   Issue: https://github.com/MasuRii/pi-permission-system/issues/23
 //   The local permission system currently supports:
 //     - Layered config-file permissions (PermissionManager)
 //     - Wildcard pattern matching (wildcard-matcher.ts)
@@ -58,17 +57,17 @@ import { runTest, runAsyncTest } from "./test-harness.js";
 // ---------------------------------------------------------------------------
 // Existing modules — these imports MUST succeed against current code
 // ---------------------------------------------------------------------------
-import { PermissionManager } from "../src/permission-manager.js";
-import { BashFilter } from "../src/bash-filter.js";
+import { PermissionManager } from "../src/core/permission-manager.js"
+import { BashFilter } from "../src/core/bash-filter.js"
 import {
   compileWildcardPattern,
   findCompiledWildcardMatch,
-} from "../src/wildcard-matcher.js";
+} from "../src/core/wildcard-matcher.js"
 import {
   isPermissionDecisionState,
   requestPermissionDecisionFromUi,
-} from "../src/permission-dialog.js";
-import type { PermissionState, GlobalPermissionConfig } from "../src/types.js";
+} from "../src/ui/permission-dialog.js"
+import type { PermissionState, GlobalPermissionConfig } from "../src/core/types.js"
 
 // ===========================================================================
 // Helpers
@@ -98,7 +97,7 @@ function createManager(config: GlobalPermissionConfig) {
 // TDD module import helpers — return null if module doesn't exist yet
 async function tryImportSessionApprovalStore(): Promise<{ SessionApprovalStore: unknown } | null> {
   try {
-    return await import("../src/session-approval-store.js");
+    return await import("../src/core/session-approval-store.js");
   } catch {
     return null;
   }
@@ -106,7 +105,7 @@ async function tryImportSessionApprovalStore(): Promise<{ SessionApprovalStore: 
 
 async function tryImportEvaluatePermission(): Promise<{ evaluatePermission: unknown } | null> {
   try {
-    return await import("../src/evaluate-permission.js");
+    return await import("../src/core/evaluate-permission.js");
   } catch {
     return null;
   }

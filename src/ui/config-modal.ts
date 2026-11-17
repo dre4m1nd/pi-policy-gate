@@ -1,8 +1,8 @@
 import type { ExtensionAPI, ExtensionCommandContext, TUI, Theme } from "@earendil-works/pi-coding-agent";
 import type { SettingItem } from "@earendil-works/pi-tui";
 
-import { createPermissionSystemCommandHandler, PERMISSION_SYSTEM_COMMAND_DESCRIPTION } from "./common.js";
-import type { PermissionSystemExtensionConfig } from "./extension-config.js";
+import { createPermissionSystemCommandHandler, PERMISSION_SYSTEM_COMMAND_DESCRIPTION } from "../core/common.js"
+import type { PermissionSystemExtensionConfig } from "../extension/extension-config.js"
 import { ZellijModal, ZellijSettingsModal } from "./zellij-modal.js";
 
 interface PermissionSystemConfigController {
@@ -94,7 +94,7 @@ export async function openPermissionSystemSettingsModal(ctx: ExtensionCommandCon
           borderStyle: "rounded",
           titleBar: {
             left: "Permission System Settings",
-            right: "pi-permission-system",
+            right: "pi-policy-gate",
           },
           helpUndertitle: {
             text: "Esc: close | ↑↓: navigate | Space: toggle",

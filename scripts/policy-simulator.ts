@@ -19,8 +19,8 @@ import { mkdtempSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-import { PermissionManager } from "../src/permission-manager.js";
-import { runSimulation, diffDecisions, type SimulationReport, type SimulationSample } from "../src/policy-simulator.js";
+import { PermissionManager } from "../src/core/permission-manager.js"
+import { runSimulation, diffDecisions, type SimulationReport, type SimulationSample } from "../src/governance/policy-simulator.js"
 
 type Args = { policy: string; corpus: string; basePolicyDir: string | null };
 

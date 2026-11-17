@@ -13,17 +13,17 @@ import {
   normalizePathResourceForPermission,
   PERMISSION_SYSTEM_COMMAND_DESCRIPTION,
   toRecord,
-} from "./common.js";
+} from "../core/common.js"
 import {
   createActiveToolsCacheKey,
   createBeforeAgentStartPromptStateKey,
   shouldApplyCachedAgentStartState,
-} from "./before-agent-start-cache.js";
+} from "../prompt/before-agent-start-cache.js"
 import {
   isPermissionDecisionState,
   requestPermissionDecisionFromUi,
   type PermissionPromptDecision,
-} from "./permission-dialog.js";
+} from "../ui/permission-dialog.js"
 import {
   DEFAULT_EXTENSION_CONFIG,
   getPermissionSystemConfigPath,
@@ -34,7 +34,7 @@ import {
   type PermissionSystemExtensionConfig,
 } from "./extension-config.js";
 import { createPermissionSystemLogger, safeJsonStringify } from "./logging.js";
-import { isNodeErrorWithCode } from "./jsonc-config.js";
+import { isNodeErrorWithCode } from "../core/jsonc-config.js"
 import {
   createPermissionForwardingLocation,
   isForwardedPermissionRequestForSession,
@@ -48,7 +48,7 @@ import {
   type ForwardedPermissionResponse,
   type PermissionForwardingLocation,
 } from "./permission-forwarding.js";
-import { evaluatePermission, type PatternPermissionRule } from "./evaluate-permission.js";
+import { evaluatePermission, type PatternPermissionRule } from "../core/evaluate-permission.js"
 import {
   formatAskPrompt,
   formatDenyReason,
@@ -64,20 +64,20 @@ import {
   formatUserDeniedReason,
   getStructuredEditPayloads,
   hasStructuredEditPayload,
-} from "./permission-prompts.js";
-import { PermissionManager } from "./permission-manager.js";
-import { AuditLedger, redactSubject } from "./audit-ledger.js";
-import { createAuditCommandHandler } from "./audit-command.js";
-import { computePolicyVersion } from "./policy-version.js";
-import { SessionApprovalStore } from "./session-approval-store.js";
+} from "../ui/permission-prompts.js"
+import { PermissionManager } from "../core/permission-manager.js"
+import { AuditLedger, redactSubject } from "../governance/audit-ledger.js"
+import { createAuditCommandHandler } from "../governance/audit-command.js"
+import { computePolicyVersion } from "../governance/policy-version.js"
+import { SessionApprovalStore } from "../core/session-approval-store.js"
 import {
   findSkillPathMatch,
   resolveSkillPromptEntries,
   type SkillPromptEntry,
-} from "./skill-prompt-sanitizer.js";
-import { sanitizeAvailableToolsSection } from "./system-prompt-sanitizer.js";
+} from "../prompt/skill-prompt-sanitizer.js"
+import { sanitizeAvailableToolsSection } from "../prompt/system-prompt-sanitizer.js"
 import { checkRequestedToolRegistration, getToolNameFromValue } from "./tool-registry.js";
-import type { PermissionCheckResult } from "./types.js";
+import type { PermissionCheckResult } from "../core/types.js"
 import { PERMISSION_SYSTEM_STATUS_KEY, syncPermissionSystemStatus } from "./status.js";
 import { canResolveAskPermissionRequest, shouldAutoApprovePermissionState } from "./yolo-mode.js";
 import {
@@ -150,7 +150,7 @@ type CachedPermissionPromptDecision = {
   decisionPromise: Promise<PermissionPromptDecision>;
 };
 
-const PERMISSION_REQUEST_EVENT_CHANNEL = "pi-permission-system:permission-request";
+const PERMISSION_REQUEST_EVENT_CHANNEL = "pi-policy-gate:permission-request";
 const DEFAULT_FORWARDED_PERMISSION_PROMPT_TIMEOUT_REASON = "permission_timeout: forwarded permission prompt was not answered within the configured timeout.";
 const PATH_BEARING_TOOLS = new Set(["read", "write", "edit", "find", "grep", "ls"]);
 const FILESYSTEM_TOOL_NAME_SUFFIXES = ["read", "write", "edit", "find", "grep", "search", "list", "ls"] as const;
@@ -1440,7 +1440,7 @@ export default function piPermissionSystemExtension(pi: ExtensionAPI): void {
     if (persisted) {
       const saved = savePermissionSystemConfig(normalized);
       if (!saved.success) {
-        const error = saved.error ?? "Failed to persist pi-permission-system config.";
+        const error = saved.error ?? "Failed to persist pi-policy-gate config.";
         writeDebugEntry("yolo_mode.update_failed", {
           error,
           requestedYoloMode: normalized.yoloMode,
@@ -1506,7 +1506,7 @@ export default function piPermissionSystemExtension(pi: ExtensionAPI): void {
   pi.registerCommand("permission-system", {
     description: PERMISSION_SYSTEM_COMMAND_DESCRIPTION,
     handler: createPermissionSystemCommandHandler(async (ctx) => {
-      const { openPermissionSystemSettingsModal } = await import("./config-modal.js");
+      const { openPermissionSystemSettingsModal } = await import("../ui/config-modal.js");
       await openPermissionSystemSettingsModal(ctx, {
         getConfig: () => extensionConfig,
         setConfig: saveExtensionConfig,

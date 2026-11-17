@@ -3,8 +3,7 @@
 // with real type packages
 //
 // Background:
-//   PR #13 (https://github.com/MasuRii/pi-permission-system/pull/13) replaces
-//   the hand-rolled src/types-shims.d.ts with real upstream type packages
+//   Replaces the hand-rolled src/types-shims.d.ts with real upstream type packages
 //   and drops --noCheck from the build. Adds @mariozechner/pi-coding-agent,
 //   @mariozechner/pi-tui, @mariozechner/pi-ai, @types/node, and
 //   @sinclair/typebox as devDependencies.
@@ -26,7 +25,7 @@ import { fileURLToPath } from "node:url";
 import { runTest, runAsyncTest } from "./test-harness.js";
 
 const EXTENSION_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SHIMS_PATH = join(EXTENSION_ROOT, "src", "types-shims.d.ts");
+const SHIMS_PATH = join(EXTENSION_ROOT, "src", "core", "types-shims.d.ts");
 const PACKAGE_JSON_PATH = join(EXTENSION_ROOT, "package.json");
 
 // ===========================================================================

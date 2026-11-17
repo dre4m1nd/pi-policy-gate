@@ -3,8 +3,8 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { PermissionManager } from "../src/permission-manager.js";
-import { diffDecisions, runSimulation, type SimulationSample } from "../src/policy-simulator.js";
+import { PermissionManager } from "../src/core/permission-manager.js"
+import { diffDecisions, runSimulation, type SimulationSample } from "../src/governance/policy-simulator.js"
 
 function makeManager(policyJson: string): { manager: PermissionManager; dir: string } {
   const dir = mkdtempSync(join(tmpdir(), "pi-policy-gate-sim-"));

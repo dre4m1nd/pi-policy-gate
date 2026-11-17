@@ -7,8 +7,8 @@ import {
   CONFIG_PATH_ENV_KEY,
   DEFAULT_EXTENSION_CONFIG,
   LOGS_DIR_ENV_KEY,
-} from "../src/extension-config.js";
-import piPermissionSystemExtension from "../src/index.js";
+} from "../src/extension/extension-config.js"
+import piPermissionSystemExtension from "../src/extension/index.js"
 import {
   PERMISSION_FORWARDING_AGENT_DIR_ENV_KEY,
   PI_AGENT_ROUTER_SHARED_AGENT_DIR_ENV_KEY,
@@ -16,7 +16,7 @@ import {
   PI_PERMISSION_SYSTEM_POLICY_AGENT_DIR_ENV_KEY,
   SUBAGENT_ENV_HINT_KEYS,
   SUBAGENT_PARENT_SESSION_ENV_KEY,
-} from "../src/permission-forwarding.js";
+} from "../src/extension/permission-forwarding.js"
 import { runAsyncTest } from "./test-harness.js";
 
 // Issue #29 RED coverage: the same edit request can be emitted twice in a row.

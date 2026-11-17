@@ -30,14 +30,10 @@ policy verifiable:
   to produce a decision matrix, rule coverage, dead-rule detection, and a
   decision diff between two policy versions.
 
-pi-policy-gate is a fork of
-[pi-permission-system](https://github.com/MasuRii/pi-permission-system)
-(MasuRii, MIT). It keeps the deterministic evaluation core (wildcard matching,
-last-match-wins, layered config) unchanged and builds the governance layer on
-top of it: policy versioning, an audit ledger, and an offline simulator. The
-extension id, debug log name, and permission-request event channel keep the
-`pi-permission-system` identifiers so an existing installation upgrades in
-place without breaking configured consumers.
+pi-policy-gate builds a governable policy layer on top of a deterministic
+permission evaluation core (wildcard matching, last-match-wins, layered
+config): policy versioning, an audit ledger, and an offline simulator, making
+permission policies verifiable, regression-testable, and auditable.
 
 ## How it works
 
@@ -63,15 +59,13 @@ tool call (tool, command/args)
    audit ledger (append-only JSONL, redacted, tagged with policyVersion)
 ```
 
-## What it adds over the base
+## Governance layer
 
-| Area | Base (pi-permission-system) | pi-policy-gate |
-| --- | --- | --- |
-| Evaluation core | Wildcard matching, layered config, fail-closed fallback | unchanged |
-| Policy versioning | none | content hash of the effective policy, attached to every decision |
-| Audit | review entries in session history | append-only decision ledger with secret redaction |
-| `/audit` | none | show recent decisions or export to a file |
-| Offline validation | none | policy simulator: decision matrix, coverage, dead rules, diff |
+| Capability | What it does |
+| --- | --- |
+| Policy versioning | content hash of the effective policy, attached to every decision, traceable and diffable |
+| Audit | append-only decision ledger with secret redaction; `/audit` shows recent decisions or exports them |
+| Offline simulation | decision matrix, rule coverage, dead-rule detection, and a decision diff between policy versions |
 
 ## Bash subcommand rules
 
@@ -179,14 +173,13 @@ bun scripts/policy-simulator.ts --policy policy-a.jsonc --base ./policy-b-dir
 
 ```
 src/
-  policy-version.ts     canonical policy + content hash + diff
-  policy-pipeline.ts    pure resolve → evaluate → decide pipeline
-  audit-ledger.ts       append-only decision ledger + redaction
-  audit-command.ts      /audit command handler
-  bash-command.ts       cmd: subcommand rule compiler
-  policy-simulator.ts   offline simulation, coverage, dead rules, diff
-  permission-manager.ts evaluation core (from base; + getEffectivePolicy)
-  index.ts              extension wiring: tool_call gate + commands
+  core/         permission-manager, wildcard-matcher, bash-command, bash-filter,
+                evaluate-permission, session-approval-store, common, types, jsonc-config
+  governance/   policy-version, policy-pipeline, policy-simulator, audit-ledger, audit-command
+  extension/    index (wiring), extension-config, logging, status, yolo-mode,
+                yolo-mode-api, tool-registry, permission-forwarding, model-option-compatibility
+  ui/           config-modal, zellij-modal, permission-dialog, permission-prompts
+  prompt/       system-prompt-sanitizer, skill-prompt-sanitizer, before-agent-start-cache
 samples/
   policy-corpus.json    reference decision corpus
 scripts/
@@ -215,4 +208,4 @@ audit redaction/ledger, the evaluation pipeline, and the simulator).
 
 ## License
 
-MIT. Derived from [pi-permission-system](https://github.com/MasuRii/pi-permission-system) (MIT).
+MIT. The evaluation core is derived from [pi-permission-system](https://github.com/MasuRii/pi-permission-system) (© MasuRii, MIT); its copyright and permission notice are retained.

@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { AuditLedger, auditFilePathForDate, redactSubject } from "../src/audit-ledger.js";
+import { AuditLedger, auditFilePathForDate, redactSubject } from "../src/governance/audit-ledger.js"
 
 // Secrets are assembled at runtime. The redaction patterns must remove the
 // sensitive payload; assertions check that the recognizable prefix disappears

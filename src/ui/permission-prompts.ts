@@ -1,7 +1,7 @@
-import { getNonEmptyString, toRecord } from "./common.js";
-import { safeJsonStringify } from "./logging.js";
-import type { PermissionCheckResult } from "./types.js";
-import type { SkillPromptEntry } from "./skill-prompt-sanitizer.js";
+import { getNonEmptyString, toRecord } from "../core/common.js"
+import { safeJsonStringify } from "../extension/logging.js"
+import type { PermissionCheckResult } from "../core/types.js"
+import type { SkillPromptEntry } from "../prompt/skill-prompt-sanitizer.js"
 
 const STRUCTURED_EDIT_OPERATION_NAMES = new Set(["replace", "append", "prepend", "delete", "replace_text"]);
 

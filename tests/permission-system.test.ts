@@ -3,12 +3,12 @@ import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-import { BashFilter } from "../src/bash-filter.js";
+import { BashFilter } from "../src/core/bash-filter.js"
 import {
   createActiveToolsCacheKey,
   createBeforeAgentStartPromptStateKey,
   shouldApplyCachedAgentStartState,
-} from "../src/before-agent-start-cache.js";
+} from "../src/prompt/before-agent-start-cache.js"
 import {
   CONFIG_PATH_ENV_KEY,
   DEFAULT_EXTENSION_CONFIG,
@@ -17,8 +17,8 @@ import {
   normalizePermissionSystemConfig,
   savePermissionSystemConfig,
   type PermissionSystemExtensionConfig,
-} from "../src/extension-config.js";
-import { createPermissionSystemLogger } from "../src/logging.js";
+} from "../src/extension/extension-config.js"
+import { createPermissionSystemLogger } from "../src/extension/logging.js"
 import {
   createPermissionForwardingLocation,
   isForwardedPermissionRequestForSession,
@@ -30,23 +30,23 @@ import {
   resolvePermissionForwardingTargetSessionId,
   SUBAGENT_ENV_HINT_KEYS,
   SUBAGENT_PARENT_SESSION_ENV_KEY,
-} from "../src/permission-forwarding.js";
-import piPermissionSystemExtension, { setExtensionConfig, processForwardedPermissionRequests } from "../src/index.js";
+} from "../src/extension/permission-forwarding.js"
+import piPermissionSystemExtension, { setExtensionConfig, processForwardedPermissionRequests } from "../src/extension/index.js"
 import {
   getUnsupportedTemperatureReason,
   stripUnsupportedTemperatureFromPayload,
-} from "../src/model-option-compatibility.js";
-import { PermissionManager } from "../src/permission-manager.js";
+} from "../src/extension/model-option-compatibility.js"
+import { PermissionManager } from "../src/core/permission-manager.js"
 import {
   parseAllSkillPromptSections,
   resolveSkillPromptEntries,
   findSkillPathMatch,
-} from "../src/skill-prompt-sanitizer.js";
-import { checkRequestedToolRegistration, getToolNameFromValue } from "../src/tool-registry.js";
-import { getPermissionSystemStatus } from "../src/status.js";
-import { sanitizeAvailableToolsSection } from "../src/system-prompt-sanitizer.js";
-import type { AgentPermissions, GlobalPermissionConfig } from "../src/types.js";
-import { canResolveAskPermissionRequest, shouldAutoApprovePermissionState } from "../src/yolo-mode.js";
+} from "../src/prompt/skill-prompt-sanitizer.js"
+import { checkRequestedToolRegistration, getToolNameFromValue } from "../src/extension/tool-registry.js"
+import { getPermissionSystemStatus } from "../src/extension/status.js"
+import { sanitizeAvailableToolsSection } from "../src/prompt/system-prompt-sanitizer.js"
+import type { AgentPermissions, GlobalPermissionConfig } from "../src/core/types.js"
+import { canResolveAskPermissionRequest, shouldAutoApprovePermissionState } from "../src/extension/yolo-mode.js"
 import { runAsyncTest, runTest } from "./test-harness.js";
 
 const TEST_ISOLATED_ENV_KEYS = [
@@ -182,7 +182,7 @@ function createToolCallHarness(
   const registeredEvents: string[] = [];
   const extensionConfigPath = join(baseDir, "extension-config.json");
   const logsDir = join(baseDir, "extension-logs");
-  const debugPath = join(logsDir, "pi-permission-system-debug.jsonl");
+  const debugPath = join(logsDir, "pi-policy-gate-debug.jsonl");
   const originalAgentDir = process.env.PI_CODING_AGENT_DIR;
   const originalConfigPath = process.env[CONFIG_PATH_ENV_KEY];
   const originalLogsDir = process.env[LOGS_DIR_ENV_KEY];
@@ -335,14 +335,14 @@ await runAsyncTest("Extension exposes a runtime YOLO API for other extensions", 
     assert.deepEqual(transient, { yoloMode: true, changed: true, persisted: false });
     assert.equal(loadPermissionSystemConfig().config.yoloMode, false);
     const enabledStatus = statusUpdates.at(-1);
-    assert.equal(enabledStatus?.key, "pi-permission-system");
+    assert.equal(enabledStatus?.key, "pi-policy-gate");
     assert.equal(enabledStatus?.value, "yolo");
 
     const persisted = api.setYoloMode(false, { source: "test-extension" });
     assert.deepEqual(persisted, { yoloMode: false, changed: true, persisted: true });
     assert.equal(loadPermissionSystemConfig().config.yoloMode, false);
     const disabledStatus = statusUpdates.at(-1);
-    assert.equal(disabledStatus?.key, "pi-permission-system");
+    assert.equal(disabledStatus?.key, "pi-policy-gate");
     assert.equal(disabledStatus?.value, undefined);
   } finally {
     await harness.cleanup();
@@ -3320,7 +3320,7 @@ await runAsyncTest("TARGETED SMOKE: agent 'code' with '*': deny blocked from rea
     assert.equal(nameLeaked, false, "CHECK 2 FAILED: Deny reason leaks the skill name—security concern");
 
     // ---- Check 3: yoloMode does NOT auto-approve a deny-state read ----
-    const { savePermissionSystemConfig, DEFAULT_EXTENSION_CONFIG } = await import("../src/extension-config.js");
+    const { savePermissionSystemConfig, DEFAULT_EXTENSION_CONFIG } = await import("../src/extension/extension-config.js");
     savePermissionSystemConfig({ ...DEFAULT_EXTENSION_CONFIG, yoloMode: true });
     const yoloResult = await runToolCall(harness, {
       toolName: "read",

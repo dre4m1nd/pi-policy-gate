@@ -1,5 +1,5 @@
 import type { PermissionSystemExtensionConfig } from "./extension-config.js";
-import type { PermissionState } from "./types.js";
+import type { PermissionState } from "../core/types.js"
 
 export interface AskPermissionResolutionOptions {
   config: PermissionSystemExtensionConfig;

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 
-import type { PermissionSystemExtensionConfig } from "../src/extension-config.js";
+import type { PermissionSystemExtensionConfig } from "../src/extension/extension-config.js"
 import { runAsyncTest, runTest } from "./test-harness.js";
 
 type BunModuleMock = {
@@ -40,7 +40,7 @@ await registerBunModuleMock("@earendil-works/pi-tui", () => ({
   visibleWidth: (text: string) => text.length,
 }));
 
-const { registerPermissionSystemCommand } = await import("../src/config-modal.js");
+const { registerPermissionSystemCommand } = await import("../src/ui/config-modal.js");
 
 type Notification = { message: string; level: "info" | "warning" | "error" };
 
@@ -130,7 +130,7 @@ await runAsyncTest("permission-system command only opens the settings modal", as
   };
   const registeredDefinition = registerForTest(config);
 
-  assert.ok(registeredDefinition.description.includes("Configure pi-permission-system"));
+  assert.ok(registeredDefinition.description.includes("Configure pi-policy-gate"));
 
   const headlessCtx = createCommandContext(false);
   await registeredDefinition.handler("", headlessCtx.ctx);

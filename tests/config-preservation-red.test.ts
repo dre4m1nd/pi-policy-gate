@@ -31,9 +31,9 @@ import {
   loadPermissionSystemConfig,
   normalizePermissionSystemConfig,
   savePermissionSystemConfig,
-} from "../src/extension-config.js";
-import { parseJsoncConfig } from "../src/jsonc-config.js";
-import piPermissionSystemExtension from "../src/index.js";
+} from "../src/extension/extension-config.js"
+import { parseJsoncConfig } from "../src/core/jsonc-config.js"
+import piPermissionSystemExtension from "../src/extension/index.js"
 import { createMockContext, runAsyncTest } from "./test-harness.js";
 
 // ---------------------------------------------------------------------------

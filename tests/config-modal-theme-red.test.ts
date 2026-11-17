@@ -6,8 +6,8 @@ import { join } from "node:path";
 import {
   openPermissionSystemSettingsModal,
   registerPermissionSystemCommand,
-} from "../src/config-modal.js";
-import type { PermissionSystemExtensionConfig } from "../src/extension-config.js";
+} from "../src/ui/config-modal.js"
+import type { PermissionSystemExtensionConfig } from "../src/extension/extension-config.js"
 
 // RED coverage for Issue #27:
 //   Extension "command:permission-system" error:
@@ -276,7 +276,7 @@ await runIssue27RedTest("ISSUE27-RED-4: extension-registered /permission-system 
     process.env.PI_PERMISSION_SYSTEM_CONFIG_PATH = configPath;
     process.env.PI_PERMISSION_SYSTEM_LOGS_DIR = logsDir;
 
-    const { default: piPermissionSystemExtension } = await import("../src/index.js");
+    const { default: piPermissionSystemExtension } = await import("../src/extension/index.js");
     let definition: RegisteredCommandDefinition | null = null;
 
     piPermissionSystemExtension({

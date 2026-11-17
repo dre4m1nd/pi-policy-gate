@@ -1,7 +1,7 @@
 import { join } from "node:path";
 
-import { getNonEmptyString, normalizeAgentName } from "./common.js";
-import type { PermissionDecisionState } from "./permission-dialog.js";
+import { getNonEmptyString, normalizeAgentName } from "../core/common.js"
+import type { PermissionDecisionState } from "../ui/permission-dialog.js"
 
 export const PERMISSION_FORWARDING_POLL_INTERVAL_MS = 2_000;
 export const PERMISSION_FORWARDING_WATCH_DEBOUNCE_MS = 25;

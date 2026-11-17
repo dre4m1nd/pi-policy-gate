@@ -3,14 +3,14 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { normalizePathForComparison } from "../src/common.js";
+import { normalizePathForComparison } from "../src/core/common.js"
 import {
   CONFIG_PATH_ENV_KEY,
   DEFAULT_EXTENSION_CONFIG,
   LOGS_DIR_ENV_KEY,
   type PermissionSystemExtensionConfig,
-} from "../src/extension-config.js";
-import piPermissionSystemExtension from "../src/index.js";
+} from "../src/extension/extension-config.js"
+import piPermissionSystemExtension from "../src/extension/index.js"
 import {
   PERMISSION_FORWARDING_AGENT_DIR_ENV_KEY,
   PI_AGENT_ROUTER_SHARED_AGENT_DIR_ENV_KEY,
@@ -18,9 +18,9 @@ import {
   PI_PERMISSION_SYSTEM_POLICY_AGENT_DIR_ENV_KEY,
   SUBAGENT_ENV_HINT_KEYS,
   SUBAGENT_PARENT_SESSION_ENV_KEY,
-} from "../src/permission-forwarding.js";
-import { PermissionManager } from "../src/permission-manager.js";
-import type { GlobalPermissionConfig, PermissionDefaultPolicy } from "../src/types.js";
+} from "../src/extension/permission-forwarding.js"
+import { PermissionManager } from "../src/core/permission-manager.js"
+import type { GlobalPermissionConfig, PermissionDefaultPolicy } from "../src/core/types.js"
 
 type ExpectedKind = "red" | "regression";
 

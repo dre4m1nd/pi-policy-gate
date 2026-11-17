@@ -140,7 +140,7 @@ function ensureModelOptionGuardForApi(pi: ExtensionAPI, api: Api): boolean {
     baseStreams.set(api, baseStream);
   }
 
-  const providerName = `pi-permission-system-model-option-compatibility-${api.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
+  const providerName = `pi-policy-gate-model-option-compatibility-${api.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
   if (!pi.registerProvider) {
     return false;
   }

@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 
 import { getAgentDir } from "@earendil-works/pi-coding-agent";
 
-import type { PermissionState } from "./types.js";
+import type { PermissionState } from "../core/types.js"
 
 /**
  * Audit decision ledger.

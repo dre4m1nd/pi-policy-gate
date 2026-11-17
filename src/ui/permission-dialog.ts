@@ -1,4 +1,4 @@
-import { getNonEmptyString } from "./common.js";
+import { getNonEmptyString } from "../core/common.js"
 
 export type PermissionDecisionState = "approved" | "denied" | "denied_with_reason" | "once" | "always" | "reject";
 

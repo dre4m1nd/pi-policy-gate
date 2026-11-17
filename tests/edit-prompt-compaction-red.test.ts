@@ -3,16 +3,16 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import piPermissionSystemExtension from "../src/index.js";
+import piPermissionSystemExtension from "../src/extension/index.js"
 import {
   CONFIG_PATH_ENV_KEY,
   DEFAULT_EXTENSION_CONFIG,
   LOGS_DIR_ENV_KEY,
-} from "../src/extension-config.js";
+} from "../src/extension/extension-config.js"
 import {
   requestPermissionDecisionFromUi,
   type PermissionDecisionUi,
-} from "../src/permission-dialog.js";
+} from "../src/ui/permission-dialog.js"
 import { createMockContext, runAsyncTest } from "./test-harness.js";
 
 type MockHandler = (

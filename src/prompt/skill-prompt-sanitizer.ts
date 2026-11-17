@@ -1,8 +1,8 @@
 import { dirname } from "node:path";
 
-import { isPathWithinDirectory, normalizePathForComparison } from "./common.js";
-import { PermissionManager } from "./permission-manager.js";
-import type { PermissionState } from "./types.js";
+import { isPathWithinDirectory, normalizePathForComparison } from "../core/common.js"
+import { PermissionManager } from "../core/permission-manager.js"
+import type { PermissionState } from "../core/types.js"
 
 const AVAILABLE_SKILLS_OPEN_TAG = "<available_skills>";
 const AVAILABLE_SKILLS_CLOSE_TAG = "</available_skills>";

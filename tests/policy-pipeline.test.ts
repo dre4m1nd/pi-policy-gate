@@ -3,8 +3,8 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { PermissionManager } from "../src/permission-manager.js";
-import { describeSubject, evaluateToolCall } from "../src/policy-pipeline.js";
+import { PermissionManager } from "../src/core/permission-manager.js"
+import { describeSubject, evaluateToolCall } from "../src/governance/policy-pipeline.js"
 
 function makeManager(policyJson: string): { manager: PermissionManager; dir: string } {
   const dir = mkdtempSync(join(tmpdir(), "pi-policy-gate-pipe-"));
