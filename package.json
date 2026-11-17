@@ -41,15 +41,15 @@
     "authorization",
     "security"
   ],
-  "author": "MasuRii",
+  "author": "dre4m1nd",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MasuRii/pi-policy-gate.git"
+    "url": "git+https://github.com/dre4m1nd/pi-policy-gate.git"
   },
-  "homepage": "https://github.com/MasuRii/pi-policy-gate#readme",
+  "homepage": "https://github.com/dre4m1nd/pi-policy-gate#readme",
   "bugs": {
-    "url": "https://github.com/MasuRii/pi-policy-gate/issues"
+    "url": "https://github.com/dre4m1nd/pi-policy-gate/issues"
   },
   "engines": {
     "node": ">=20",

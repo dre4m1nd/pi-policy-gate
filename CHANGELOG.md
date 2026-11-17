@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Regression suites for the new modules: policy versioning/diff, audit redaction and ledger, the evaluation pipeline, the simulator, `cmd:` rule compilation, and multiline/ReDoS wildcard behavior.
 
 ### Changed
-- Renamed the project from `pi-permission-system` to `pi-policy-gate` and expanded it from a runtime gate into a versioned, auditable, regression-testable policy engine. The extension id, debug log name, and permission-request event channel keep the `pi-permission-system` identifiers so existing installations upgrade in place.
+- Forked [pi-permission-system](https://github.com/MasuRii/pi-permission-system) as `pi-policy-gate` and added the governance layer on top, turning a runtime gate into a versioned, auditable, regression-testable policy engine. The extension id, debug log name, and permission-request event channel keep the `pi-permission-system` identifiers so existing installations upgrade in place.
 
 
 ## [0.8.0] - 2026-07-03

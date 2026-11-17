@@ -28,13 +28,14 @@ policy verifiable:
   to produce a decision matrix, rule coverage, dead-rule detection, and a
   decision diff between two policy versions.
 
-pi-policy-gate is the successor of
-[pi-permission-system](https://github.com/MasuRii/pi-permission-system): the
-deterministic evaluation core (wildcard matching, last-match-wins, layered
-config) is carried over unchanged, and the governance layer is built on top of
-it. The extension id, debug log name, and permission-request event channel
-keep the `pi-permission-system` identifiers so an existing installation
-upgrades in place without breaking configured consumers.
+pi-policy-gate is a fork of
+[pi-permission-system](https://github.com/MasuRii/pi-permission-system)
+(MasuRii, MIT). It keeps the deterministic evaluation core (wildcard matching,
+last-match-wins, layered config) unchanged and builds the governance layer on
+top of it: policy versioning, an audit ledger, and an offline simulator. The
+extension id, debug log name, and permission-request event channel keep the
+`pi-permission-system` identifiers so an existing installation upgrades in
+place without breaking configured consumers.
 
 ## How it works
 
@@ -101,7 +102,7 @@ pi install git:github.com/<you>/pi-policy-gate
 Or from a local checkout:
 
 ```bash
-git clone https://github.com/MasuRii/pi-policy-gate.git
+git clone https://github.com/dre4m1nd/pi-policy-gate.git
 cd pi-policy-gate
 bun install
 pi install .
