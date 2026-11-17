@@ -1,0 +1,25 @@
+{
+  "description": "Sample tool-call corpus for the pi-policy-gate simulator. Each entry records a tool call and the permission state the gate should produce under the reference policy (config/config.example.json). Used by the offline regression harness and the table-driven tests.",
+  "policy": "config/config.example.json",
+  "samples": [
+    { "toolName": "read", "input": { "path": "src/index.ts" }, "expected": "allow", "note": "tools.read allow" },
+    { "toolName": "read", "input": { "path": "/home/alice/project/generated/types.ts" }, "expected": "allow", "note": "resource-qualified read allow" },
+    { "toolName": "read", "input": { "path": "/etc/passwd" }, "expected": "allow", "note": "read rule is unscoped; path not special-gated here" },
+    { "toolName": "write", "input": { "path": "src/new.ts" }, "expected": "deny", "note": "tools.write deny" },
+    { "toolName": "edit", "input": { "path": "src/index.ts" }, "expected": "ask", "note": "no edit rule -> defaultPolicy.tools ask" },
+    { "toolName": "grep", "input": { "pattern": "TODO" }, "expected": "ask", "note": "no grep rule -> defaultPolicy.tools ask" },
+    { "toolName": "bash", "input": { "command": "git status" }, "expected": "allow", "note": "cmd:git status subcommand rule" },
+    { "toolName": "bash", "input": { "command": "git status --short" }, "expected": "allow", "note": "cmd:git status matches arguments" },
+    { "toolName": "bash", "input": { "command": "git push --force origin main" }, "expected": "deny", "note": "cmd:git push subcommand rule" },
+    { "toolName": "bash", "input": { "command": "git log --oneline" }, "expected": "ask", "note": "no cmd rule -> git * wildcard ask" },
+    { "toolName": "bash", "input": { "command": "rm -rf /" }, "expected": "ask", "note": "no bash match -> defaultPolicy.bash ask" },
+    { "toolName": "bash", "input": { "command": "ls -la" }, "expected": "ask", "note": "no bash match -> defaultPolicy.bash ask" },
+    { "toolName": "mcp", "input": { "server": "filesystem", "tool": "read_file" }, "expected": "ask", "note": "no mcp rule for filesystem -> defaultPolicy.mcp ask" },
+    { "toolName": "mcp", "input": { "server": "mcp_status" }, "expected": "allow", "note": "mcp mcp_status allow (baseline)" },
+    { "toolName": "skill", "input": { "name": "test-driven-development" }, "expected": "ask", "note": "skills * ask" },
+    { "toolName": "doom_loop", "input": {}, "expected": "deny", "note": "special doom_loop deny" },
+    { "toolName": "external_directory", "input": { "path": "/home/alice/shared/data.csv" }, "expected": "allow", "note": "resource-qualified external allow via */shared/*" },
+    { "toolName": "external_directory", "input": { "path": "/etc/hosts" }, "expected": "ask", "note": "no external match -> defaultPolicy.special ask" },
+    { "toolName": "custom_extension_tool", "input": {}, "expected": "ask", "note": "unknown tool -> defaultPolicy.tools ask" }
+  ]
+}

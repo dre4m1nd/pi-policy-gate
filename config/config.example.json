@@ -1,0 +1,30 @@
+{
+  "defaultPolicy": {
+    "tools": "ask",
+    "bash": "ask",
+    "mcp": "ask",
+    "skills": "ask",
+    "special": "ask"
+  },
+  "tools": {
+    "read": "allow",
+    "read:/home/alice/project/generated/*": "allow",
+    "write": "deny"
+  },
+  "bash": {
+    "git *": "ask",
+    "cmd:git push": "deny",
+    "cmd:git status": "allow"
+  },
+  "mcp": {
+    "mcp_status": "allow"
+  },
+  "skills": {
+    "*": "ask"
+  },
+  "special": {
+    "doom_loop": "deny",
+    "external_directory": "ask",
+    "external_directory:*/shared/*": "allow"
+  }
+}
