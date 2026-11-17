@@ -1,83 +1,71 @@
-**[English](README.md) | [简体中文](README.zh-CN.md)**
+**[简体中文](README.md) | [English](README.en.md)**
 
 <div align="center">
 
 # pi-policy-gate
 
-**A versioned, auditable permission policy engine for the [Pi](https://github.com/earendil-works/pi) coding agent.**
+**面向 [Pi](https://github.com/earendil-works/pi) 编码代理的、可版本化、可审计的权限策略引擎。**
 
-Every tool call an agent makes (bash, file read/write, MCP, skills, special
-operations) passes through a deterministic gate. This project turns that gate
-from a runtime-only switch into something you can **version, audit, and
-regression-test** offline.
+代理发出的每一次工具调用（bash、文件读写、MCP、技能、特殊操作）都会经过一道确定性闸门。
+本工程把这道闸门从一个只在运行时生效的开关，变成可以**版本化、审计、离线回归测试**的东西。
 
 </div>
 
-## Why
+## 为什么需要它
 
-Coding agents run with the user's full authority. A prompt injection, a
-misdirected model, or a careless rule can delete a repo, push to the wrong
-branch, or exfiltrate a credential. The fix is a deterministic permission gate
-in front of every tool call — but a gate you cannot observe is a gate you
-cannot trust. pi-policy-gate adds the three things that make a permission
-policy verifiable:
+编码代理以用户的完整权限运行。一次提示注入、一个被带偏的模型，或者一条粗心的规则，
+都可能删掉仓库、推错分支，或者外泄凭证。解决办法是在每次工具调用前设置一道确定性的权限闸门
+——但一道你无法观测的闸门，就是一道你无法信任的闸门。pi-policy-gate 补充了让权限策略
+可被验证的三件事：
 
-- **Versioning** — every decision is bound to a content hash of the effective
-  policy, so you can always answer "which policy produced this decision?".
-- **Audit** — every decision is recorded as an append-only, redacted JSONL
-  record, retrievable from the TUI or exported for CI.
-- **Simulation** — a fixed corpus of tool calls is evaluated against a policy
-  to produce a decision matrix, rule coverage, dead-rule detection, and a
-  decision diff between two policy versions.
+- **版本化** —— 每个决策都绑定到有效策略的内容哈希，因此你总能回答“这个决策是哪条策略产生的？”。
+- **审计** —— 每个决策都以只追加、已脱敏的 JSONL 记录落盘，可从 TUI 查看，也可导出给 CI。
+- **仿真** —— 用一份固定的工具调用语料对策略求值，产出决策矩阵、规则覆盖率、死规则检测，
+  以及两个策略版本之间的决策差异。
 
-pi-policy-gate is a fork of
-[pi-permission-system](https://github.com/MasuRii/pi-permission-system)
-(MasuRii, MIT). It keeps the deterministic evaluation core (wildcard matching,
-last-match-wins, layered config) unchanged and builds the governance layer on
-top of it: policy versioning, an audit ledger, and an offline simulator. The
-extension id, debug log name, and permission-request event channel keep the
-`pi-permission-system` identifiers so an existing installation upgrades in
-place without breaking configured consumers.
+pi-policy-gate 是
+[pi-permission-system](https://github.com/MasuRii/pi-permission-system)（MasuRii，MIT）的 fork。
+它原样保留确定性求值内核（通配匹配、last-match-wins、分层配置），并在其上构建治理层：
+策略版本化、审计账本与离线仿真器。扩展 id、调试日志名与权限请求事件通道继续沿用
+`pi-permission-system` 的标识符，因此已有安装可以原地升级，而不会破坏已配置的消费方。
 
-## How it works
+## 工作原理
 
-The gate is a three-stage pure pipeline. The live handler and the offline
-simulator share the exact same evaluation path, so a passing simulation means
-the running gate will agree with the expected decisions.
+闸门是一条三阶段的纯管线。线上处理器与离线仿真器共用完全相同的求值路径，
+因此一次通过的仿真就意味着线上闸门会与预期决策一致。
 
 ```
 tool call (tool, command/args)
         │
         ▼
 ┌─────────────────────┐
-│  1. resolve         │  effective policy for the agent + its version (content hash)
-│  2. evaluate        │  match against compiled rules (last-match-wins)
+│  1. resolve         │  该代理的有效策略 + 其版本（内容哈希）
+│  2. evaluate        │  与已编译规则匹配（last-match-wins）
 │  3. decide          │  allow / deny / ask
 └─────────────────────┘
         │
-        ├─ allow ───────────────► execute
-        ├─ deny  ───────────────► block
-        └─ ask   ───────────────► prompt the user, then allow / deny
+        ├─ allow ───────────────► 执行
+        ├─ deny  ───────────────► 拦截
+        └─ ask   ───────────────► 提示用户，随后 allow / deny
         │
         ▼
-   audit ledger (append-only JSONL, redacted, tagged with policyVersion)
+   审计账本（只追加 JSONL，已脱敏，带 policyVersion 标记）
 ```
 
-## What it adds over the base
+## 相对基础版的新增
 
-| Area | Base (pi-permission-system) | pi-policy-gate |
+| 领域 | 基础版（pi-permission-system） | pi-policy-gate |
 | --- | --- | --- |
-| Evaluation core | Wildcard matching, layered config, fail-closed fallback | unchanged |
-| Policy versioning | none | content hash of the effective policy, attached to every decision |
-| Audit | review entries in session history | append-only decision ledger with secret redaction |
-| `/audit` | none | show recent decisions or export to a file |
-| Offline validation | none | policy simulator: decision matrix, coverage, dead rules, diff |
+| 求值内核 | 通配匹配、分层配置、fail-closed 兜底 | 不变 |
+| 策略版本化 | 无 | 有效策略的内容哈希，附加在每个决策上 |
+| 审计 | 会话历史中的 review 条目 | 只追加的决策账本，带密钥脱敏 |
+| `/audit` | 无 | 查看最近决策或导出为文件 |
+| 离线验证 | 无 | 策略仿真器：决策矩阵、覆盖率、死规则、差异 |
 
-## Bash subcommand rules
+## Bash 子命令规则
 
-An exact bash pattern is still exact (`"git status"` matches only `git status`).
-To gate a **subcommand** regardless of its arguments, prefix the pattern with
-`cmd:`:
+精确的 bash 模式仍然是精确匹配（`"git status"` 只匹配 `git status`）。若要**无论参数如何**
+都对某个子命令设卡，在模式前加上 `cmd:`：
 
 ```jsonc
 {
@@ -89,19 +77,18 @@ To gate a **subcommand** regardless of its arguments, prefix the pattern with
 }
 ```
 
-`cmd:git push` matches `git push`, `git push --force origin main`,
-`FOO=bar git push`, `/usr/bin/git push`, and `git.exe push`; it does not match
-`git status`, `git pushx`, or `echo git push`. Rules participate in the same
-last-match-wins ordering as every other bash rule, so declare broader wildcard
-rules first and specific `cmd:` rules later.
+`cmd:git push` 匹配 `git push`、`git push --force origin main`、`FOO=bar git push`、
+`/usr/bin/git push` 以及 `git.exe push`；不匹配 `git status`、`git pushx` 或 `echo git push`。
+这些规则与其他 bash 规则参与同一套 last-match-wins 排序，因此先声明更宽泛的通配规则，
+后声明更具体的 `cmd:` 规则。
 
-## Install
+## 安装
 
 ```bash
 pi install git:github.com/<you>/pi-policy-gate
 ```
 
-Or from a local checkout:
+或从本地检出安装：
 
 ```bash
 git clone https://github.com/dre4m1nd/pi-policy-gate.git
@@ -110,109 +97,98 @@ bun install
 pi install .
 ```
 
-The extension registers two slash commands:
+扩展注册了两个斜杠命令：
 
-- `/permission-system` — configure debug logging and yolo-mode behavior.
-- `/audit` — show the most recent decisions, or `/audit export <path>` to
-  write them as JSONL for CI or post-hoc review.
+- `/permission-system` —— 配置调试日志与 yolo 模式行为。
+- `/audit` —— 查看最近的决策，或用 `/audit export <path>` 将其写为 JSONL，供 CI 或事后审查。
 
-## The three pillars
+## 三大支柱
 
-### 1. Policy versioning
+### 1. 策略版本化
 
-`src/policy-version.ts` computes a short SHA-256 content hash of the
-**effective** policy (the result of layering global, project, agent, and
-project-agent permissions). The canonical form sorts every rule map by key, so
-the same set of rules always yields the same version regardless of file
-formatting or key order. Any change to an effective rule changes the version.
+`src/policy-version.ts` 计算**有效**策略（全局、项目、代理、项目-代理权限分层合并后的结果）
+的一段短 SHA-256 内容哈希。规范形式会按键对每个规则映射排序，因此同一套规则无论文件格式
+或键顺序如何，总能得到同一个版本号。任何有效规则的变化都会改变版本号。
 
-Every audit record carries the version it was decided under, so decisions are
-traceable. `diffPolicies()` produces a human-readable add/remove/change
-report between two versions.
+每条审计记录都带有产生它的版本，因此决策可追溯。`diffPolicies()` 生成两个版本之间
+人类可读的增/删/改报告。
 
-### 2. Audit decision ledger
+### 2. 审计决策账本
 
-`src/audit-ledger.ts` appends one JSONL line per decision to
-`~/.pi/agent/audit/decisions-<date>.jsonl`. Each record contains the
-policy version, tool, source, matched rule, decision, and a **redacted**
-subject (command or resource). Redaction targets common credential shapes
-(provider keys, bearer tokens, key=value secrets, long opaque tokens) while
-leaving ordinary commands and paths intact.
+`src/audit-ledger.ts` 每个决策追加一行 JSONL 到 `~/.pi/agent/audit/decisions-<date>.jsonl`。
+每条记录包含策略版本、工具、来源、命中的规则、决策，以及**已脱敏**的主体（命令或资源）。
+脱敏针对常见凭证形态（厂商密钥、bearer token、key=value 秘密、长不透明令牌），
+同时保留普通命令与路径不变。
 
-Design guarantee: the ledger is a **side effect**. A decision is never blocked
-or altered because logging failed — a missing record means the decision path
-did not reach the ledger, not that logging was silently skipped.
+设计保证：账本是**副作用**。决策绝不会因为日志失败而被阻塞或改写——缺少记录意味着决策路径
+没有走到账本，而不是日志被静默跳过。
 
-### 3. Policy simulator
+### 3. 策略仿真器
 
-`src/policy-simulator.ts` + `scripts/policy-simulator.ts` run a fixed corpus
-(`samples/policy-corpus.json`) against a policy and report:
+`src/policy-simulator.ts` 与 `scripts/policy-simulator.ts` 用一份固定语料
+（`samples/policy-corpus.json`）对某个策略求值，并报告：
 
-- **Decision matrix** — each sample's expected vs actual decision.
-- **Rule coverage** — how often each rule is exercised.
-- **Dead rules** — rules that never matched any sample (written but never
-  effective). `defaultPolicy` entries are excluded: they are fallback
-  semantics, not rules to be exercised.
-- **Decision diff** — which samples changed decision between two policies, so
-  a policy edit cannot silently flip an allow to a deny (or vice versa).
+- **决策矩阵** —— 每个样本的预期决策与实际决策。
+- **规则覆盖率** —— 每条规则被触发的次数。
+- **死规则** —— 从未匹配任何样本的规则（写了但从不生效）。`defaultPolicy` 条目被排除：
+  它们是兜底语义，不是需要被触发的规则。
+- **决策差异** —— 哪些样本在两个策略之间改变了决策，因此策略编辑不会悄悄把 allow
+  翻成 deny（或反过来）。
 
 ```bash
-# run the reference policy against the reference corpus
+# 用参考策略跑参考语料
 bun run simulate
 
-# compare two policies
+# 比较两个策略
 bun scripts/policy-simulator.ts --policy policy-a.jsonc --base ./policy-b-dir
 ```
 
-## Engineering decisions
+## 工程决策
 
-| Question | Decision | Rationale |
+| 问题 | 决策 | 理由 |
 | --- | --- | --- |
-| Config parse error | **fail-closed**: fall back to `ask` | A broken policy must not silently allow everything. |
-| Rule conflict | **last-match-wins** (from base) | Preserves the base's proven semantics; the simulator surfaces when a later rule overrides an earlier one. |
-| Audit write failure | **decision unaffected**, log a warning | The gate must never be bypassed because logging is down. |
-| Regex injection | pattern length cap + escaping (from base) | Oversized/untrusted patterns cannot cause catastrophic backtracking. |
-| Dead-rule detection | excludes `defaultPolicy` | Defaults are fallbacks, not rules to be "exercised". |
-| Redaction | conservative, targeted | Remove credential shapes without mangling normal commands/paths. |
+| 配置解析错误 | **fail-closed**：回退为 `ask` | 一条坏掉的策略不能悄悄放行一切。 |
+| 规则冲突 | **last-match-wins**（来自基础版） | 保留基础版经过验证的语义；仿真器会暴露后置规则覆盖前置规则的情形。 |
+| 审计写入失败 | **不影响决策**，记录警告 | 闸门绝不能因为日志不可用而被绕过。 |
+| 正则注入 | 模式长度上限 + 转义（来自基础版） | 过大或不受信任的模式不会造成灾难性回溯。 |
+| 死规则检测 | 排除 `defaultPolicy` | 默认值是兜底，不是需要“被触发”的规则。 |
+| 脱敏 | 保守、定向 | 移除凭证形态，而不破坏普通命令/路径。 |
 
-## Layout
+## 目录结构
 
 ```
 src/
-  policy-version.ts     canonical policy + content hash + diff
-  policy-pipeline.ts    pure resolve → evaluate → decide pipeline
-  audit-ledger.ts       append-only decision ledger + redaction
-  audit-command.ts      /audit command handler
-  bash-command.ts       cmd: subcommand rule compiler
-  policy-simulator.ts   offline simulation, coverage, dead rules, diff
-  permission-manager.ts evaluation core (from base; + getEffectivePolicy)
-  index.ts              extension wiring: tool_call gate + commands
+  policy-version.ts     规范策略 + 内容哈希 + 差异
+  policy-pipeline.ts    纯的 resolve → evaluate → decide 管线
+  audit-ledger.ts       只追加的决策账本 + 脱敏
+  audit-command.ts      /audit 命令处理器
+  bash-command.ts       cmd: 子命令规则编译器
+  policy-simulator.ts   离线仿真、覆盖率、死规则、差异
+  permission-manager.ts 求值内核（来自基础版；+ getEffectivePolicy）
+  index.ts              扩展接线：tool_call 闸门 + 命令
 samples/
-  policy-corpus.json    reference decision corpus
+  policy-corpus.json    参考决策语料
 scripts/
-  policy-simulator.ts   simulator CLI runner
-tests/                  unit + table-driven regression tests
+  policy-simulator.ts   仿真器 CLI 运行器
+tests/                  单元测试 + 表驱动回归测试
 ```
 
-## Testing
+## 测试
 
 ```bash
 bun install
 bun run typecheck
-bun run test        # full suite
-bun run simulate    # offline policy regression
+bun run test        # 完整测试套件
+bun run simulate    # 离线策略回归
 ```
 
-The suite includes table-driven tests for each new module (policy versioning,
-audit redaction/ledger, the evaluation pipeline, and the simulator).
+测试套件包含针对每个新模块的表驱动测试（策略版本化、审计脱敏/账本、求值管线、仿真器）。
 
-> Note: `tests/config-preservation-red.test.ts` is an Issue #31 regression
-> suite. Its symlink-preservation case is guarded by an explicit skip when the
-> platform cannot create file symlinks (Windows without Developer Mode / an
-> elevated shell, where `symlinkSync` throws `EPERM`); on Linux and macOS the
-> case runs and passes, confirming that saving through a symlinked
-> `config.json` writes to the target and leaves the link intact.
+> 说明：`tests/config-preservation-red.test.ts` 是 Issue #31 的回归套件。其中的符号链接
+> 保留用例在平台无法创建文件符号链接时会被显式跳过（Windows 未开启开发者模式 / 未提权时，
+> `symlinkSync` 会抛出 `EPERM`）；在 Linux 与 macOS 上该用例会实际运行并通过，
+> 确认通过符号链接形式的 `config.json` 保存会写入目标文件，并保持链接本身完好。
 
-## License
+## 许可
 
-MIT. Derived from [pi-permission-system](https://github.com/MasuRii/pi-permission-system) (MIT).
+MIT。派生自 [pi-permission-system](https://github.com/MasuRii/pi-permission-system)（MIT）。

@@ -15,7 +15,7 @@
     "config/config.example.json",
     "schemas/permissions.schema.json",
     "README.md",
-    "README.zh-CN.md",
+    "README.en.md",
     "CHANGELOG.md",
     "LICENSE"
   ],
